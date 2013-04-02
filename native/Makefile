@@ -118,7 +118,7 @@ NDK_PLATFORM?=/Developer/Applications/android-ndk-r7c/platforms/android-14
 JAVA_INCLUDES=
 CINCLUDES+=-I"$(NDK_PLATFORM)/arch-arm/usr/include" # -I/usr/include
 LIBS=-nostdlib -L"$(NDK_PLATFORM)/arch-arm/usr/lib/" -lgcc -lc -ldl -lm
-LDFLAGS+=-Wl,-shared,-Bsymbolic
+LDFLAGS+=-Wl,-shared,-Bsymbolic,-no_pie,-no_compact_unwind
 FFI_ENV=CPP="$(CPP)" CC="$(CC)" CFLAGS="$(COPT) $(CDEBUG) $(CINCLUDES)" CPPFLAGS="$(CDEFINES) $(CINCLUDES)" LIBS="$(LIBS)" RANLIB="$(RANLIB)"
 FFI_CONFIG=--enable-static --disable-shared --with-pic=yes --host=arm-linux-eabi
 endif
@@ -308,6 +308,8 @@ LDFLAGS=$(ARCHFLAGS) -dynamiclib -o $@ -framework JavaVM \
   -compatibility_version $(shell echo ${JNA_JNI_VERSION}|sed 's/^\([0-9][0-9]*\).*/\1/g') \
   -current_version $(JNA_JNI_VERSION) \
   -mmacosx-version-min=10.3 \
+  -framework Foundation \
+  -Wl,-no_compact_unwind,-no_pie \
   -install_name ${@F} \
   $(SYSLIBROOT)
 # JAWT linkage handled by -framework JavaVM
